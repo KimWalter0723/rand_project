@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>头盔检测</title>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>头盔检测系统</h2>
+    <video id="video" autoplay playsinline></video>
+    <button id="capture">拍照检测</button>
+    <canvas id="canvas"></canvas>
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
