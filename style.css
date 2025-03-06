@@ -2,20 +2,40 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
     margin: 20px;
+    background-color: #f4f4f4;
 }
 
-video {
-    width: 100%;
+h2 {
+    color: #333;
+}
+
+video, canvas {
+    width: 90%;
     max-width: 400px;
     border: 2px solid black;
+    margin: 10px auto;
+    display: block;
 }
 
 button {
     margin-top: 10px;
-    padding: 10px;
-    font-size: 16px;
-    background: blue;
+    padding: 12px 20px;
+    font-size: 18px;
+    background: #007BFF;
     color: white;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+#result {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
 }
