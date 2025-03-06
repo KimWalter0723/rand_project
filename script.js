@@ -16,7 +16,7 @@ async function loadModel() {
 // 进行推理
 async function detect() {
     const session = await loadModel();
-
+    
     // 画面截图
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -24,15 +24,30 @@ async function detect() {
 
     // 获取像素数据
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-    // 转换数据格式
+    
+    // 转换数据格式（YOLOv8 需要 640x640）
     const inputTensor = new ort.Tensor("float32", new Float32Array(imageData.data), [1, 3, 640, 640]);
 
     // 运行模型
     const results = await session.run({ "images": inputTensor });
+    
+    // 解析检测结果
+    const boxes = results["output"].data;  // YOLO 输出的检测框信息
+    drawBoundingBoxes(boxes);
 
-    console.log(results);
-    resultDiv.innerHTML = "检测结果：" + JSON.stringify(results);
+    // 只显示简洁结果
+    resultDiv.innerHTML = `检测到 ${boxes.length} 个头盔`;
+}
+
+// 绘制检测框
+function drawBoundingBoxes(boxes) {
+    ctx.strokeStyle = "red";  // 框颜色
+    ctx.lineWidth = 2;  // 框粗细
+
+    boxes.forEach(box => {
+        const [x1, y1, x2, y2] = box;  // YOLOv8 的坐标格式
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);  // 画矩形框
+    });
 }
 
 // 点击按钮触发推理
