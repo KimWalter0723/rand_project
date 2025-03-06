@@ -30,23 +30,32 @@ async function detect() {
 
     // 运行模型
     const results = await session.run({ "images": inputTensor });
-    
+
     // 解析检测结果
     const boxes = results["output"].data;  // YOLO 输出的检测框信息
-    drawBoundingBoxes(boxes);
+    const classes = results["output_classes"].data; // 预测类别
 
-    // 只显示简洁结果
-    resultDiv.innerHTML = `检测到 ${boxes.length} 个头盔`;
+    if (boxes.length === 0) {
+        resultDiv.innerHTML = "未检测到任何目标";
+        return;
+    }
+
+    drawBoundingBoxes(boxes, classes);
+    
+    // 统计戴头盔和未戴头盔人数
+    const helmetCount = classes.filter(cls => cls === 0).length;
+    const noHelmetCount = classes.filter(cls => cls === 1).length;
+    
+    resultDiv.innerHTML = `检测结果：戴头盔 ✅ ${helmetCount} 人, 未戴头盔 ❌ ${noHelmetCount} 人`;
 }
 
 // 绘制检测框
-function drawBoundingBoxes(boxes) {
-    ctx.strokeStyle = "red";  // 框颜色
-    ctx.lineWidth = 2;  // 框粗细
-
-    boxes.forEach(box => {
+function drawBoundingBoxes(boxes, classes) {
+    boxes.forEach((box, index) => {
         const [x1, y1, x2, y2] = box;  // YOLOv8 的坐标格式
-        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);  // 画矩形框
+        ctx.strokeStyle = classes[index] === 0 ? "green" : "red";  // 绿色（戴头盔），红色（未戴头盔）
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
     });
 }
 
